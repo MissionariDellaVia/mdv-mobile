@@ -1,47 +1,47 @@
-import React from 'react';
+import React, {useRef, useCallback} from 'react';
 import {ScrollView, Text, StyleSheet} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import {colors, fonts, spacing} from '../theme';
 import ScreenHeader from '../components/ScreenHeader';
 import AccordionItem from '../components/AccordionItem';
 
 export default function GuideScreen() {
+  const scrollRef = useRef(null);
+  useFocusEffect(useCallback(() => {
+    scrollRef.current?.scrollTo({y: 0, animated: false});
+  }, []));
+
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <ScrollView ref={scrollRef} style={styles.screen} contentContainerStyle={styles.content}>
       <ScreenHeader
-        icon="book-open-variant"
         title="Guida all'uso"
         subtitle="Come utilizzare al meglio l'applicazione"
       />
 
-      <AccordionItem icon="download" title="Installare l'app">
-        <Text style={styles.body}>
-          Puoi installare l'app scaricandola dall'App Store (iOS) o dal Google Play Store (Android).
-          Cerca "Missionari della Via" e tocca "Installa". Una volta installata, aprila e inizia
-          a navigare tra le sezioni disponibili.
-        </Text>
-      </AccordionItem>
-
       <AccordionItem icon="magnify-plus-outline" title="Usare lo zoom">
         <Text style={styles.body}>
-          Nella sezione Vangelo trovi una barra in basso con i controlli per lo zoom.
-          Usa i pulsanti "−" e "+" per diminuire o aumentare la dimensione del testo.
-          La percentuale al centro indica il livello di zoom corrente.
-        </Text>
-      </AccordionItem>
-
-      <AccordionItem icon="refresh" title="Ricaricare la pagina">
-        <Text style={styles.body}>
-          Se il contenuto non si carica correttamente, puoi scorrere verso il basso e rilasciare
-          per aggiornare la pagina. In alternativa, passa a un'altra scheda e torna indietro
-          per forzare il ricaricamento dei dati.
+          Nella sezione "Vangelo del Giorno" trovi una barra degli strumenti fissa in basso allo schermo.{'\n\n'}
+          I pulsanti "−" e "+" servono per diminuire o aumentare la dimensione del testo del Vangelo, del commento e delle riflessioni.{'\n\n'}
+          La percentuale mostrata al centro (es. 100%) indica il livello di zoom corrente. Puoi ingrandire fino al 200% e ridurre fino all'80%.{'\n\n'}
+          Tocca la freccia in alto per tornare rapidamente all'inizio della pagina.
         </Text>
       </AccordionItem>
 
       <AccordionItem icon="lead-pencil" title="Evidenziare il testo">
         <Text style={styles.body}>
-          Nella sezione Vangelo, tocca l'icona della matita nella barra degli strumenti in basso.
-          Seleziona il testo che vuoi evidenziare. Le tue evidenziature saranno salvate e
-          visibili nella sezione "Evidenziature".
+          Nella sezione "Vangelo del Giorno", tocca l'icona della matita (evidenziatore) nella barra degli strumenti in basso. Si attiverà la modalità evidenziatura.{'\n\n'}
+          Quando la modalità è attiva, vedrai un messaggio in alto che ti invita a selezionare il testo. Tieni premuto su una parola del Vangelo, del commento o delle riflessioni, poi trascina per selezionare il testo che desideri evidenziare.{'\n\n'}
+          Quando hai selezionato il testo, comparirà il pulsante "Evidenzia" in basso: toccalo per salvare la tua evidenziatura.{'\n\n'}
+          Il testo evidenziato resterà colorato in oro nella pagina del Vangelo, così potrai riconoscerlo subito quando torni a leggere.{'\n\n'}
+          Per disattivare la modalità, tocca di nuovo l'icona della matita.
+        </Text>
+      </AccordionItem>
+
+      <AccordionItem icon="bookmark-outline" title="Gestire le evidenziature">
+        <Text style={styles.body}>
+          Tutte le evidenziature salvate sono visibili nella sezione "Evidenziature" (tab in basso).{'\n\n'}
+          Le evidenziature sono raggruppate per data del Vangelo. Per ogni evidenziatura vedrai il testo salvato, la sezione di provenienza (Vangelo, Commento o Riflessione) e la data in cui l'hai salvata.{'\n\n'}
+          Per eliminare un'evidenziatura puoi scorrere la card verso sinistra (swipe) oppure toccare la "X" in alto a destra. Una volta eliminata, il testo non sarà più evidenziato nella pagina del Vangelo.
         </Text>
       </AccordionItem>
     </ScrollView>
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
   },
   body: {
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 20,
     color: colors.textDark,
-    lineHeight: 22,
+    lineHeight: 32,
   },
 });

@@ -1,8 +1,7 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StatusBar} from 'expo-status-bar';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Ionicons, MaterialCommunityIcons} from '@expo/vector-icons';
 import {useFonts} from 'expo-font';
 import {
@@ -15,47 +14,48 @@ import {
   BarlowSemiCondensed_600SemiBold,
 } from '@expo-google-fonts/barlow-semi-condensed';
 import * as SplashScreen from 'expo-splash-screen';
-import {View, ActivityIndicator, StyleSheet} from 'react-native';
+import {View, ActivityIndicator, StyleSheet, Platform, Image, Animated} from 'react-native';
 
 import HomeScreen from './screens/HomeScreen';
 import AboutUsScreen from './screens/AboutUsScreen';
-import ConsecratedPeopleScreen from './screens/ConsecratedPeopleScreen';
-import LayPeopleScreen from './screens/LayPeopleScreen';
 import GospelWayScreen from './screens/GospelWayScreen';
 import HighlightsScreen from './screens/HighlightsScreen';
 import GuideScreen from './screens/GuideScreen';
 import {colors} from './theme';
+import {getHighlightCount} from './services/HighlightService';
 
 SplashScreen.preventAutoHideAsync();
 
 const Tab = createBottomTabNavigator();
-const AboutStack = createNativeStackNavigator();
 
-function AboutStackNavigator() {
+function GlowingIcon({source, size, color}) {
+  const anim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(anim, {toValue: 1, duration: 1200, useNativeDriver: true}),
+        Animated.timing(anim, {toValue: 0, duration: 1200, useNativeDriver: true}),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [anim]);
+
+  const tintColor = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [color, colors.light],
+  });
+  const scale = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.08],
+  });
+
   return (
-    <AboutStack.Navigator
-      screenOptions={{
-        headerStyle: {backgroundColor: colors.background},
-        headerTintColor: colors.white,
-        headerTitleStyle: {fontFamily: 'PlayfairDisplay_700Bold'},
-      }}
-    >
-      <AboutStack.Screen
-        name="AboutMain"
-        component={AboutUsScreen}
-        options={{headerShown: false}}
-      />
-      <AboutStack.Screen
-        name="Consacrated"
-        component={ConsecratedPeopleScreen}
-        options={{title: 'Consacrati'}}
-      />
-      <AboutStack.Screen
-        name="Lay"
-        component={LayPeopleScreen}
-        options={{title: 'Laici'}}
-      />
-    </AboutStack.Navigator>
+    <Animated.Image
+      source={source}
+      style={{width: size, height: size, tintColor, transform: [{scale}]}}
+    />
   );
 }
 
@@ -66,7 +66,10 @@ function getTabIcon(routeName, focused, color, size) {
     case 'ChiSiamo':
       return <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} size={size} color={color} />;
     case 'Vangelo':
-      return <MaterialCommunityIcons name={focused ? 'book-open-variant' : 'book-open-outline'} size={size} color={color} />;
+      if (focused) {
+        return <Image source={require('./assets/gospel.png')} style={{width: size, height: size, tintColor: color}} />;
+      }
+      return <GlowingIcon source={require('./assets/gospel.png')} size={size} color={color} />;
     case 'Evidenziature':
       return <MaterialCommunityIcons name={focused ? 'lead-pencil' : 'pencil-outline'} size={size} color={color} />;
     case 'Guida':
@@ -83,7 +86,9 @@ export default function App() {
     BarlowSemiCondensed_400Regular,
     BarlowSemiCondensed_500Medium,
     BarlowSemiCondensed_600SemiBold,
+    SaveTheDateSansBold: require('./assets/save-the-date-sans-bold.otf'),
   });
+  const [highlightCount, setHighlightCount] = useState(0);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -102,34 +107,58 @@ export default function App() {
   return (
     <View style={{flex: 1}} onLayout={onLayoutRootView}>
       <StatusBar style="light" />
-      <NavigationContainer>
+      <NavigationContainer
+        linking={{
+          prefixes: ['mdv://'],
+          config: {
+            screens: {
+              Vangelo: 'gospel/:date',
+            },
+          },
+        }}
+      >
         <Tab.Navigator
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) =>
               getTabIcon(route.name, focused, color, size),
-            tabBarActiveTintColor: colors.primary,
-            tabBarInactiveTintColor: colors.white,
+            tabBarActiveTintColor: colors.dark,
+            tabBarInactiveTintColor: colors.background,
             tabBarStyle: {
-              backgroundColor: colors.background,
-              borderTopColor: 'rgba(255,255,255,0.1)',
-              paddingBottom: 4,
-              height: 60,
+              backgroundColor: colors.cardBackground,
+              borderTopColor: 'rgba(255,255,255,0.15)',
+              paddingTop: Platform.OS === 'ios' ? 12 : 8,
+              paddingBottom: Platform.OS === 'ios' ? 20 : 8,
+              height: Platform.OS === 'ios' ? 90 : 72,
             },
             tabBarLabelStyle: {
               fontFamily: 'BarlowSemiCondensed_500Medium',
               fontSize: 11,
             },
             headerShown: false,
+            animation: 'none',
           })}
         >
           <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen
             name="ChiSiamo"
-            component={AboutStackNavigator}
+            component={AboutUsScreen}
             options={{tabBarLabel: 'Chi siamo'}}
           />
           <Tab.Screen name="Vangelo" component={GospelWayScreen} />
-          <Tab.Screen name="Evidenziature" component={HighlightsScreen} />
+          <Tab.Screen
+            name="Evidenziature"
+            component={HighlightsScreen}
+            options={{
+              tabBarBadge: highlightCount > 0 ? highlightCount : undefined,
+              tabBarBadgeStyle: {backgroundColor: colors.primary, fontSize: 11},
+            }}
+            listeners={{
+              tabPress: async () => {
+                const count = await getHighlightCount();
+                setHighlightCount(count);
+              },
+            }}
+          />
           <Tab.Screen name="Guida" component={GuideScreen} />
         </Tab.Navigator>
       </NavigationContainer>

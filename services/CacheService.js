@@ -47,6 +47,14 @@ export async function getCachedGospelWay(date, fetcher) {
   return data;
 }
 
+export async function invalidateKey(key) {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch {
+    // silently fail
+  }
+}
+
 export async function getCachedDates(fetcher) {
   const key = 'allowed_dates';
   const cached = await getWithTTL(key);

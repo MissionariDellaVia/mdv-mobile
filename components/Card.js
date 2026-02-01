@@ -1,9 +1,29 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import {Animated, StyleSheet} from 'react-native';
 import {colors, spacing} from '../theme';
 
 export default function Card({children, style}) {
-  return <View style={[styles.card, style]}>{children}</View>;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(15)).current;
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  return (
+    <Animated.View style={[styles.card, {opacity, transform: [{translateY}]}, style]}>
+      {children}
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({

@@ -1,11 +1,5 @@
-import Constants from 'expo-constants';
-
-const {supabaseUrl, supabaseAnonKey} = Constants.expirationDate
-  ? {}
-  : Constants.expoConfig?.extra ?? {};
-
-const BASE_URL = supabaseUrl || 'https://YOUR_PROJECT.supabase.co';
-const ANON_KEY = supabaseAnonKey || 'YOUR_ANON_KEY';
+const BASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 const MAX_RETRIES = 3;
 const TIMEOUT_MS = 10000;

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     fontFamily: fonts.bodyMedium,
-    fontSize: 16,
+    fontSize: 18,
     color: colors.textDark,
   },
   content: {

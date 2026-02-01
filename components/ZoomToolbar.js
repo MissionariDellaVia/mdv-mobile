@@ -1,26 +1,32 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import {colors, fonts, spacing} from '../theme';
 
-export default function ZoomToolbar({zoomLevel, onZoomIn, onZoomOut, onHighlight, onScrollTop}) {
+export default function ZoomToolbar({zoomLevel, onZoomIn, onZoomOut, onHighlight, onScrollTop, highlightActive}) {
   const label = `${Math.round(zoomLevel * 100)}%`;
+
+  const withHaptic = (fn) => () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    fn();
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.toolbar}>
-        <TouchableOpacity onPress={onZoomOut} style={styles.btn}>
+        <TouchableOpacity onPress={withHaptic(onZoomOut)} style={styles.btn}>
           <Text style={styles.btnText}>−</Text>
         </TouchableOpacity>
         <Text style={styles.label}>{label}</Text>
-        <TouchableOpacity onPress={onZoomIn} style={styles.btn}>
+        <TouchableOpacity onPress={withHaptic(onZoomIn)} style={styles.btn}>
           <Text style={styles.btnText}>+</Text>
         </TouchableOpacity>
         <View style={styles.separator} />
-        <TouchableOpacity onPress={onHighlight} style={styles.btn}>
-          <MaterialCommunityIcons name="lead-pencil" size={20} color={colors.textDark} />
+        <TouchableOpacity onPress={withHaptic(onHighlight)} style={[styles.btn, highlightActive && styles.highlightActiveBtn]}>
+          <MaterialCommunityIcons name="lead-pencil" size={20} color={highlightActive ? colors.white : colors.textDark} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onScrollTop} style={[styles.btn, styles.scrollTopBtn]}>
+        <TouchableOpacity onPress={withHaptic(onScrollTop)} style={[styles.btn, styles.scrollTopBtn]}>
           <MaterialCommunityIcons name="arrow-up" size={20} color={colors.white} />
         </TouchableOpacity>
       </View>
@@ -63,7 +69,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 16,
     color: colors.textDark,
     marginHorizontal: spacing.sm,
   },
@@ -75,6 +81,9 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   scrollTopBtn: {
+    backgroundColor: colors.primary,
+  },
+  highlightActiveBtn: {
     backgroundColor: colors.primary,
   },
 });

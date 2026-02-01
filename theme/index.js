@@ -1,14 +1,18 @@
 export const colors = {
-  background: '#6B4E3D',
-  cardBackground: '#F5F1EC',
-  primary: '#C17B3C',
+  background: '#6e4f3a',
+  cardBackground: '#E6DECA',
+  primary: '#A67D51',
+  dark: '#472b21',
+  light: '#d3b282',
   textDark: '#281D02',
   textMuted: '#908286',
   white: '#FFFFFF',
   accent: '#A8956E',
+  navBar: '#D2C4A8',
 };
 
 export const fonts = {
+  display: 'SaveTheDateSansBold',
   heading: 'PlayfairDisplay_700Bold',
   headingItalic: 'PlayfairDisplay_700Bold_Italic',
   body: 'BarlowSemiCondensed_400Regular',

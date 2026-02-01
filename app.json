@@ -3,11 +3,13 @@
     "name": "Missionari della Via",
     "slug": "mdv-mobile",
     "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "scheme": "mdv",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
     "splash": {
+      "image": "./assets/logo-mdv-aggiornato.png",
       "backgroundColor": "#6B4E3D",
       "resizeMode": "contain"
     },
@@ -17,13 +19,14 @@
     },
     "android": {
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#6B4E3D"
       },
       "package": "net.missionaridellavia.app"
     },
-    "extra": {
-      "supabaseUrl": "https://YOUR_PROJECT.supabase.co",
-      "supabaseAnonKey": "YOUR_ANON_KEY"
-    }
+    "extra": {},
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }

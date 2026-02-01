@@ -29,6 +29,11 @@ export async function removeHighlight(id) {
   return filtered;
 }
 
+export async function getHighlightCount() {
+  const highlights = await getHighlights();
+  return highlights.length;
+}
+
 export async function getHighlightsByDate(date) {
   const highlights = await getHighlights();
   return highlights.filter(h => h.date === date);
