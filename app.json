@@ -1,4 +1,32 @@
 {
-  "name": "Missionari_della_Vita",
-  "displayName": "Missionari della Via"
+  "expo": {
+    "name": "Missionari della Via",
+    "slug": "mdv-mobile",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "scheme": "mdv",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/logo-mdv-aggiornato.png",
+      "backgroundColor": "#6B4E3D",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "net.missionaridellavia.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#6B4E3D"
+      },
+      "package": "net.missionaridellavia.app"
+    },
+    "extra": {},
+    "plugins": [
+      "expo-asset"
+    ]
+  }
 }
