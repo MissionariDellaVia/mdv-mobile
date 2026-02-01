@@ -26,7 +26,15 @@
     },
     "extra": {},
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/logo-mdv-aggiornato.png",
+          "backgroundColor": "#6B4E3D",
+          "imageWidth": 200
+        }
+      ]
     ]
   }
 }
