@@ -4,26 +4,24 @@ import {colors, fonts, spacing} from '../theme';
 import ScreenHeader from '../components/ScreenHeader';
 import Card from '../components/Card';
 
-export default function ConsecratedPeopleScreen() {
+export default function LayPeopleScreen() {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <ScreenHeader
-        icon="account-group"
-        title="Consacrati"
-        subtitle="La vita consacrata nella comunità"
+        icon="account-multiple"
+        title="Laici"
+        subtitle="Il cammino dei laici"
       />
 
       <Card>
         <Text style={styles.bodyText}>
-          I Missionari della Via sono una comunità di consacrati che vivono secondo
-          i consigli evangelici di povertà, castità e obbedienza. La loro missione
-          è l'evangelizzazione attraverso la meditazione quotidiana del Vangelo e
-          la condivisione della Parola di Dio.
+          I laici dei Missionari della Via sono uomini e donne che, vivendo nel mondo,
+          desiderano seguire Cristo con radicalità evangelica. Attraverso la meditazione
+          quotidiana del Vangelo, cercano di incarnare la Parola nella vita di ogni giorno.
         </Text>
         <Text style={styles.bodyText}>
-          Fondati con il carisma di portare il Vangelo nella vita quotidiana,
-          i consacrati dedicano la loro esistenza alla preghiera, alla formazione
-          e all'accompagnamento spirituale dei fedeli.
+          Il cammino dei laici si caratterizza per la preghiera personale e comunitaria,
+          la formazione permanente e l'impegno missionario nei propri ambienti di vita.
         </Text>
       </Card>
     </ScrollView>

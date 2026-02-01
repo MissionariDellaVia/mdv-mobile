@@ -1,116 +1,166 @@
-import moment from 'moment';
-import 'moment/locale/it';
-import React from 'react';
-import {
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, ScrollView, StyleSheet, Image, ActivityIndicator} from 'react-native';
+import dayjs from 'dayjs';
+import 'dayjs/locale/it';
+import {colors, fonts, spacing} from '../theme';
+import Card from '../components/Card';
+import {getHomeInfo} from '../services/ApiService';
+import {getCachedHomeInfo} from '../services/CacheService';
 
-const HomeScreen = ({navigation}) => {
-  const {
-    homeViewContainer,
-    imageBG,
-    currentDate,
-    containerDate,
-    homeButton,
-    textButton,
-  } = styles;
+dayjs.locale('it');
 
-  const imageUrlBG = require('../assets/pergamena-background.jpeg');
+export default function HomeScreen() {
+  const [info, setInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const homeButtonsArr = [
-    {
-      title: 'Chi Siamo',
-      backgroundColor: '#763902',
-      textColor: 'gold',
-      action: 'AboutUs',
-    },
-    {
-      title: 'Via del Vangelo',
-      backgroundColor: '#763902',
-      textColor: 'gold',
-      action: 'Vangelo',
-    },
-    {
-      title: 'Notizie',
-      backgroundColor: '#763902',
-      textColor: 'gold',
-      action: 'News',
-    },
-    {
-      title: 'Appuntamenti',
-      backgroundColor: '#763902',
-      textColor: 'gold',
-      action: 'Meetings',
-    },
-  ];
+  const today = dayjs().format('YYYY-MM-DD');
+  const todayLabel =
+    dayjs().format('dddd D MMMM YYYY').charAt(0).toUpperCase() +
+    dayjs().format('dddd D MMMM YYYY').slice(1);
 
-  const today = () => {
-    const now = moment().format('dddd DD MMMM YYYY');
-
-    return now;
-  };
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getCachedHomeInfo(today, () => getHomeInfo(today));
+        setInfo(data);
+      } catch (e) {
+        console.warn('Failed to load home info:', e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [today]);
 
   return (
-    <View style={homeViewContainer}>
-      <ImageBackground source={imageUrlBG} resizeMode="cover" style={imageBG}>
-        {/* CONTAINER CURRENT DATA */}
-        <View style={containerDate}>
-          <Text style={currentDate}>{today()}</Text>
-        </View>
+    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/pergamena-background.jpeg')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
 
-        {/* HOME BUTTONS */}
-        {homeButtonsArr.map((button, index) => {
-          return (
-            <TouchableHighlight
-              key={index}
-              style={{marginBottom: 20}}
-              onPress={() => {
-                navigation.navigate(button.action);
-              }}>
-              <View
-                style={[homeButton, {backgroundColor: button.backgroundColor}]}>
-                <Text style={[textButton, {color: button.textColor}]}>
-                  {button.title}
-                </Text>
-              </View>
-            </TouchableHighlight>
-          );
-        })}
-      </ImageBackground>
-    </View>
+      <Card>
+        <Text style={styles.dateText}>{todayLabel}</Text>
+
+        {loading ? (
+          <ActivityIndicator color={colors.primary} style={{marginVertical: spacing.lg}} />
+        ) : info ? (
+          <>
+            {info.saint && (
+              <Text style={styles.saintText}>{info.saint}</Text>
+            )}
+            {info.season && (
+              <Text style={styles.seasonText}>{info.season}</Text>
+            )}
+            <View style={styles.divider} />
+            <Text style={styles.welcomeTitle}>
+              Caro fratello o sorella <Text style={{fontFamily: fonts.heading}}>benvenuto/a!</Text>
+            </Text>
+            <Text style={styles.bodyText}>
+              Questo sito contiene il diario spirituale della Comunità sul Vangelo del giorno.
+              L'abbiamo realizzata perché potesse servire anche a te!
+            </Text>
+            <Text style={styles.bodyText}>
+              Questo commento è un aiuto per meditare e custodire almeno una parola del Vangelo,
+              perché possa portare frutto nel cammino quotidiano alla sequela di Gesù.
+            </Text>
+            {info.bookletNote && (
+              <Text style={styles.italicNote}>{info.bookletNote}</Text>
+            )}
+          </>
+        ) : (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.welcomeTitle}>
+              Caro fratello o sorella <Text style={{fontFamily: fonts.heading}}>benvenuto/a!</Text>
+            </Text>
+            <Text style={styles.bodyText}>
+              Questo sito contiene il diario spirituale della Comunità sul Vangelo del giorno.
+              L'abbiamo realizzata perché potesse servire anche a te!
+            </Text>
+            <Text style={styles.bodyText}>
+              Questo commento è un aiuto per meditare e custodire almeno una parola del Vangelo,
+              perché possa portare frutto nel cammino quotidiano alla sequela di Gesù.
+            </Text>
+            <Text style={styles.italicNote}>
+              Se desideri il libretto cartaceo trimestrale, dove poter sottolineare e prendere appunti,
+              puoi richiederlo scrivendoci.
+            </Text>
+          </>
+        )}
+      </Card>
+    </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  homeViewContainer: {
+  screen: {
     flex: 1,
+    backgroundColor: colors.background,
   },
-  imageBG: {
-    flex: 1,
+  content: {
+    paddingBottom: spacing.xxl,
+  },
+  logoContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: spacing.xxl,
+    paddingBottom: spacing.lg,
   },
-  containerDate: {
-    marginBottom: 30,
+  logo: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
-  currentDate: {
+  dateText: {
+    fontFamily: fonts.heading,
     fontSize: 22,
-    textTransform: 'capitalize',
-  },
-  homeButton: {
-    minWidth: 200,
-    padding: 10,
-  },
-  textButton: {
+    color: colors.textDark,
     textAlign: 'center',
-    fontWeight: 'bold',
+    marginBottom: spacing.sm,
+  },
+  saintText: {
+    fontFamily: fonts.headingItalic,
+    fontSize: 18,
+    color: colors.primary,
+    textAlign: 'center',
+    marginBottom: spacing.xs,
+  },
+  seasonText: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+    marginVertical: spacing.md,
+  },
+  welcomeTitle: {
+    fontFamily: fonts.body,
     fontSize: 16,
-    textTransform: 'uppercase',
+    color: colors.textDark,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+  },
+  bodyText: {
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: colors.textDark,
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: spacing.md,
+  },
+  italicNote: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: colors.primary,
+    textAlign: 'center',
+    fontStyle: 'italic',
+    lineHeight: 22,
+    marginTop: spacing.sm,
   },
 });
-
-export default HomeScreen;
