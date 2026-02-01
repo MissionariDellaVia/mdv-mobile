@@ -2,8 +2,11 @@
   "expo": {
     "name": "Missionari della Via",
     "slug": "mdv-mobile",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "sdkVersion": "54.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "scheme": "mdv",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,14 +18,19 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "net.missionaridellavia.app"
+      "bundleIdentifier": "net.missionaridellavia.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#6B4E3D"
       },
-      "package": "net.missionaridellavia.app"
+      "package": "net.missionaridellavia.app",
+      "versionCode": 1
     },
     "extra": {},
     "plugins": [
