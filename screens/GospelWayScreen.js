@@ -34,6 +34,7 @@ import HtmlText from '../components/HtmlText';
 dayjs.locale('it');
 
 const stripHtml = (html) => html?.replace(/<[^>]+>/g, '').trim() || '';
+const hasContent = (html) => !!html && stripHtml(html).length > 0;
 
 const MIN_ZOOM = 0.8;
 const MAX_ZOOM = 2.0;
@@ -292,7 +293,7 @@ export default function GospelWayScreen({route}) {
           </Card>
         )}
 
-        {gospel?.comments?.main && (
+        {hasContent(gospel?.comments?.main) && (
           <Card>
             <Text style={[styles.sectionTitle, {fontSize: titleFontSize}]}>
               COMMENTO AL VANGELO
@@ -315,7 +316,7 @@ export default function GospelWayScreen({route}) {
           </Card>
         )}
 
-        {gospel?.comments?.reflection && (
+        {hasContent(gospel?.comments?.reflection) && (
           <Card>
             <Text style={[styles.sectionTitle, {fontSize: titleFontSize}]}>
               RIFLESSIONI
@@ -338,7 +339,7 @@ export default function GospelWayScreen({route}) {
           </Card>
         )}
 
-        {gospel?.media?.videos && (
+        {gospel?.media?.videos?.length > 0 && (
           <Card>
             <VideoCarousel videos={gospel.media.videos} />
           </Card>
