@@ -339,9 +339,9 @@ export default function GospelWayScreen({route}) {
           </Card>
         )}
 
-        {gospel?.media?.videos?.length > 0 && (
+        {gospel?.media?.videos?.filter(v => v)?.length > 0 && (
           <Card>
-            <VideoCarousel videos={gospel.media.videos} />
+            <VideoCarousel videos={gospel.media.videos.filter(v => v)} />
           </Card>
         )}
 

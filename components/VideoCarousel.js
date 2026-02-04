@@ -53,11 +53,6 @@ function VideoCard({video, index}) {
             </View>
           )}
         </View>
-        {title && (
-          <Text style={styles.videoTitle} numberOfLines={2}>
-            {title}
-          </Text>
-        )}
       </TouchableOpacity>
     </Animated.View>
   );
