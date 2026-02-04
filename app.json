@@ -32,7 +32,11 @@
       "package": "net.missionaridellavia.app",
       "versionCode": 1
     },
-    "extra": {},
+    "extra": {
+      "eas": {
+        "projectId": "8c4d3c06-b865-416b-b7ee-311d268f2989"
+      }
+    },
     "plugins": [
       "expo-asset",
       [
